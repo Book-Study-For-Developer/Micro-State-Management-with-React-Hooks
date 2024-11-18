@@ -39,3 +39,78 @@
 5. `PR`은 마지막에 확인한 사람이 머지를 진행해주세요.
 
 ### 🏃‍♂️ 스터디원
+
+<table>
+  <tr>
+    <td>
+      <img src="https://avatars.githubusercontent.com/u/51049245?v=4" width="120px" height="120px"/>
+    </td>
+    <td>
+      <img src="https://avatars.githubusercontent.com/u/29765842?v=4" width="120px" height="120px"/>
+    </td>
+    <td>
+      <img src="https://avatars.githubusercontent.com/u/68809452?v=4" width="120px" height="120px"/>
+    </td>
+    <td>
+      <img src="" width="120px" height="120px"/>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="https://github.com/haryan248">
+        하현준
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/jangsumin">
+        장수민
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/samseburn">
+        고석영
+      </a>
+    </td>
+    <td>
+      <a href="">
+        최연수
+      </a>
+    </td>
+  </tr>
+    <tr>  
+    <td>
+      <img src="" width="120px" height="120px"/>
+    </td>
+    <td>
+      <img src="" width="120px" height="120px"/>
+    </td>
+    <td>
+      <img src="" width="120px" height="120px"/>
+    </td>
+    <td>
+      <img src="" width="120px" height="120px"/>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="">
+        김호진
+      </a>
+    </td>
+    <td>
+      <a href="">
+        김나영
+      </a>
+    </td>
+    <td>
+      <a href="">
+        박상우
+      </a>
+    </td>
+    <td>
+      <a href="">
+      </a>
+    </td>
+  </tr>
+  </table>
