@@ -52,7 +52,10 @@
       <img src="https://avatars.githubusercontent.com/u/68809452?v=4" width="120px" height="120px"/>
     </td>
     <td>
-      <img src="" width="120px" height="120px"/>
+      <img src="https://avatars.githubusercontent.com/u/123397411?v=4" width="120px" height="120px"/>
+    </td>
+    <td>
+      <img src="https://avatars.githubusercontent.com/u/60695299?v=4" width="120px" height="120px"/>
     </td>
   </tr>
 
@@ -73,44 +76,54 @@
       </a>
     </td>
     <td>
-      <a href="">
+      <a href="https://github.com/ella-yschoi">
         최연수
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/jhlee0409">
+        이재혁
       </a>
     </td>
   </tr>
     <tr>  
     <td>
-      <img src="" width="120px" height="120px"/>
+      <img src="https://avatars.githubusercontent.com/u/76891694?v=4" width="120px" height="120px"/>
     </td>
     <td>
-      <img src="" width="120px" height="120px"/>
+      <img src="https://avatars.githubusercontent.com/u/70098144?v=4" width="120px" height="120px"/>
     </td>
     <td>
-      <img src="" width="120px" height="120px"/>
+      <img src="https://avatars.githubusercontent.com/u/49917043?v=4" width="120px" height="120px"/>
     </td>
     <td>
-      <img src="" width="120px" height="120px"/>
+      <img src="https://avatars.githubusercontent.com/u/92621861?v=4" width="120px" height="120px"/>
+    </td>
+    <td>
     </td>
   </tr>
   <tr>
     <td>
-      <a href="">
+      <a href="https://github.com/hovelopin">
         김호진
       </a>
     </td>
     <td>
-      <a href="">
+      <a href="https://github.com/nayoung3669">
         김나영
       </a>
     </td>
     <td>
-      <a href="">
+      <a href="https://github.com/SangWoo9734">
         박상우
       </a>
     </td>
     <td>
-      <a href="">
+      <a href="https://github.com/joooonis">
+        박태준
       </a>
+    </td>
+    <td>
     </td>
   </tr>
   </table>
