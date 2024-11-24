@@ -316,7 +316,7 @@ https://ahooks.js.org/hooks/use-get-state
 
 ### useResetState
 
--useState에 추가적으로 reset 매서드를 제공합니다.
+useState에 추가적으로 reset 매서드를 제공합니다.
 
 ```tsx
 const [state, setState, resetState] = useResetState<S>(
