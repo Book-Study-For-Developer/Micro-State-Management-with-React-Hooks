@@ -106,8 +106,7 @@ const Component = () => {
 
 ```tsx
 // useReducer로 useState 구현하기
-const reducer = (prev, action) =>
-  typeof action === "function" ? action(prev) : action;
+const reducer = (prev, action) => (typeof action === 'function' ? action(prev) : action);
 
 const useState = (initialState) => {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -149,3 +148,32 @@ const ComponentWithUseState = ({ initialCount }) => {
   // ...
 };
 ```
+
+> ❓ 인라인 함수 없이도 최적화가 더 잘 될 수 있다라는 말이 무엇일까 ❓
+
+JavaScript V8 엔진의 최적화 기법 중에는 Inlining(인라이닝)이라는 기법이 있다. 인라이닝은 함수 호출의 오버헤드를 줄이기 위해 사용되는 컴파일러 최적화 기법이다. 이 과정에서는 함수 호출 대신 함수의 본문으로 대체하고, 실행 시간을 단축시키는 데 도움이 된다고 한다.
+
+```js
+function add(a, b) {
+  return a + b;
+}
+
+function main() {
+  let result = add(2, 3);
+  console.log(result);
+}
+
+// -------------------
+// 위 코드 대신 인라이닝 기법을 활용하면,
+
+function main() {
+  let a = 2;
+  let b = 3;
+  let result = a + b;
+  console.log(result);
+}
+```
+
+이러한 인라이닝 기법을 통해 **1. 함수 호출과 반환에 소요되는 시간을 줄여, 전체 실행 시간을 감소시키고**, **2. 오히려 작은 함수의 경우 호출 자체가 함수 내부 로직보다 더 많은 시간을 소요할 수 있는데 이러한 오버헤드를 줄여준다.**
+
+그렇기 때문에 인라인 함수 없이도 최적화가 더 잘 될 수 있는 인터프리터나 컴파일러가 있다👈👈라는 말은, 결국 함수 호출에 드는 비용을 줄이기 위해 인라인 함수에서 함수를 호출하기보다 함수를 참조하는 편이 더 나을 수 있고 이런 의미에서 useReducer가 useState보다 다소 좋다고 얘기하는 것이 아닐까라는 생각이 든다.
