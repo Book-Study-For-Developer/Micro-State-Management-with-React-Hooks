@@ -13,21 +13,6 @@
 
 ### 📝 예제 정리 
 
-```jsx
-const Component = () => {
-  const [count , setCount] = useState(0);
-
-  return (
-    <div>
-      {count}
-      <button onClick={() => setCount(count + 1)}>Set Count to {count + 1}</button>
-    </div>
-  )
-};
-
-```
-빠르게 두번 클릭했을때 한번만 증가한다. ==> 이걸 Batching이라고 표현해도 되는건가?!?
-
 **useReducer로 useState를 구현**
 ```jsx
 const useState = (initialState) => {
