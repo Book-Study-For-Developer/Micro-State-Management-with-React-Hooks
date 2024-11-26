@@ -66,19 +66,325 @@ const useReducer = () => {
 
 Suspense는 기본적으로 리액트 패러다임에 걸맞는 선언적인 컴포넌트이다. 만일 Suspense를 사용하지 않고 로딩을 처리한다면 어떻게 될까? 
 
+구현에 약간의 차이점이 있겠지만 대부분의 사람들은 아래와 같이 로딩 상태를 직접 관리하게 된다. 
 
+```jsx
+const UserList = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setIsLoading(true);
+        // API 호출 예시
+        const response = await fetch('https://api.example.com/users');
+        if (!response.ok) {
+          throw new Error('Failed to fetch users');
+        }
+        const data = await response.json();
+        setUsers(data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
+    fetchUsers();
+  }, []);
 
+  if (isLoading) {
+    return <LoadingSpinner>Loading...</LoadingSpinner>;
+  }
 
+  return (
+    {users.map((user) => (
+      <UserItem key={user.id}>
+        <UserName>{user.name}</UserName>
+        <UserEmail>{user.email}</UserEmail>
+      </UserItem>
+    ))}
+  );
+};
+```
 
-#### 3️⃣ 동시성 렌더링이란 무엇일까?
+위와 같은 상황에서 Suspense에게 비동기 처리를 위임하여 보다 선언적이게 코드 관리가 가능하게 된다. 
 
+```jsx
+const WrapperComponent = () => {
+	return (
+		<Suspense fallback={<div>Loading!!!!</div>}>
+			<UserList />	
+		</Suspense>
+	)
+}
 
+// 기존코드에서 Loading 관련된 상태가 없어지고 컴포넌트의 역할과 책임이 명확해진 것 같다.
+const UserList = () => {
+  const [users, setUsers] = useState<User[]>([]);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        // API 호출 예시
+        const response = await fetch('https://api.example.com/users');
+        if (!response.ok) {
+          throw new Error('Failed to fetch users');
+        }
+        const data = await response.json();
+        setUsers(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
+    fetchUsers();
+  }, []);
 
-### ❓ 궁금한 점
-- 전역상태를 보통 어떤 상황에서 사용할까? 또는 사용하는 각자의 기준이 있을까?
+  return (
+    {users.map((user) => (
+      <UserItem key={user.id}>
+        <UserName>{user.name}</UserName>
+        <UserEmail>{user.email}</UserEmail>
+      </UserItem>
+    ))}
+  );
+};
+```
+
+여기서 잠깐! 위와 같이 Suspense로 감싸기만  한다고해서 Suspense는 모든 로딩을 처리할 수 있을까? **결론부터 말하면 아니다!**
+
+Suspense는 기본적으로 하위 컴포넌트에서 Promise를 Catch하고 해당 Promise를 기반으로 Pending 상태가 된다면 Fallback을 fulfilled 상태가 된다면 하위 컴포넌트를 보여주게 된다.
+
+UserList 컴포넌트는 사실 아래와 같은 로직이 되어야 할 것 같다. 
+
+```jsx
+const WrapperComponent = () => {
+	return (
+		<Suspense fallback={<div>Loading!!!!</div>}>
+			<UserList />	
+		</Suspense>
+	)
+}
+
+const promiseWrapper = (promise) => {
+  let status = "pending";
+  let result;
+
+  const s = promise.then(
+    (value:any) => {
+      status = "success";
+      result = value;
+    },
+    (error:any) => {
+      status = "error";
+      result = error;
+    }
+  );
+
+  return () => {
+    switch (status) {
+	    // pending 상태일때 promise를 상위 suspense가 catch할 수 있도록 던진다.
+      case "pending":
+        throw s;
+      case "success":
+        return result;
+      case "error":
+        throw result;
+      default:
+        throw new Error("Unknown status");
+    }
+  };
+};
+
+// 기존코드에서 Loading 관련된 상태가 없어지고 컴포넌트의 역할과 책임이 명확해진 것 같다.
+const UserList = () => {
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        // Promise 상태의 응답 객체를 promiseWrapper에게 전달하여 상위 Suspense가 Catch할 수 있게 한다. 
+        const response = fetch('https://api.example.com/users').then(res => res.json());
+        const data = promiseWrapper(response);
+        setUsers(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  return (
+    {users.map((user) => (
+      <UserItem key={user.id}>
+        <UserName>{user.name}</UserName>
+        <UserEmail>{user.email}</UserEmail>
+      </UserItem>
+    ))}
+  );
+};
+```
+
+사실 위와 같이 항상 promiseWrapper를 사용하여 suspense에게 던지는 행위는 번거롭기 때문에 react-query와 같은 라이브러리를 활용하면 훨씬 수월하게 해결할 수 있다. 
+
+react-query에서 suspense가 catch하기 위해서는 useSuspenseQuery를 사용하는데 해당 로직도 동일하게 Promise를 던지는 행위를 하고 있나 한번 살펴봤다.
+
+`useSuspenseQuery.ts`
+
+```jsx
+export function useSuspenseQuery<
+  TQueryFnData = unknown,
+  TError = DefaultError,
+  TData = TQueryFnData,
+  TQueryKey extends QueryKey = QueryKey,
+>(
+  options: UseSuspenseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> {
+  if (process.env.NODE_ENV !== 'production') {
+    if ((options.queryFn as any) === skipToken) {
+      console.error('skipToken is not allowed for useSuspenseQuery')
+    }
+  }
+
+  return useBaseQuery(
+    {
+      ...options,
+      enabled: true,
+      suspense: true,
+      throwOnError: defaultThrowOnError,
+      placeholderData: undefined,
+    },
+    QueryObserver,
+    queryClient,
+  ) as UseSuspenseQueryResult<TData, TError>
+}
+```
+
+useSuspenseQuery를 살펴보니 useBaseQuery에 suspense 옵션을 활성화하는 작업을 진행하고
+
+> 참고 (https://github.com/TanStack/query/blob/main/packages/react-query/src/useSuspenseQuery.ts)
+    
+
+`useBaseQuery.ts`
+
+```jsx
+ // Handle suspense
+  if (shouldSuspend(defaultedOptions, result)) {
+    throw fetchOptimistic(defaultedOptions, observer, errorResetBoundary)
+  }
+  
+```
+
+useBaseQuery 로직내에 shouldSuspend 로직이 true가 되면 fetchOptimistic 로직을 통해 throw하게 된다. 
+
+> 참고 (https://github.com/TanStack/query/blob/main/packages/react-query/src/useBaseQuery.ts)
+    
+
+`suspense.ts`
+
+```jsx
+export const fetchOptimistic = <
+  TQueryFnData,
+  TError,
+  TData,
+  TQueryData,
+  TQueryKey extends QueryKey,
+>(
+  defaultedOptions: DefaultedQueryObserverOptions<
+    TQueryFnData,
+    TError,
+    TData,
+    TQueryData,
+    TQueryKey
+  >,
+  observer: QueryObserver<TQueryFnData, TError, TData, TQueryData, TQueryKey>,
+  errorResetBoundary: QueryErrorResetBoundaryValue,
+) =>
+  observer.fetchOptimistic(defaultedOptions).catch(() => {
+    errorResetBoundary.clearReset()
+  })
+```
+
+fetchOptimistic은 react-query에 핵심인 observer내에 fetchOptimistic을 정의하고 
+
+> 참고 (https://github.com/TanStack/query/blob/main/packages/react-query/src/suspense.ts)    
+    
+    
+
+`queryObserver.ts`
+
+```jsx
+ fetchOptimistic(
+    options: QueryObserverOptions<
+      TQueryFnData,
+      TError,
+      TData,
+      TQueryData,
+      TQueryKey
+    >,
+  ): Promise<QueryObserverResult<TData, TError>> {
+    const defaultedOptions = this.#client.defaultQueryOptions(options)
+
+    const query = this.#client
+      .getQueryCache()
+      .build(this.#client, defaultedOptions)
+
+    return query.fetch().then(() => this.createResult(query, defaultedOptions))
+  }
+```
+
+fetchOptimistic 내부에서는 query.fetch()를 활용하게 되고 
+
+```jsx
+protected fetch(
+    fetchOptions: ObserverFetchOptions,
+  ): Promise<QueryObserverResult<TData, TError>> {
+    return this.#executeFetch({
+      ...fetchOptions,
+      cancelRefetch: fetchOptions.cancelRefetch ?? true,
+    }).then(() => {
+      this.updateResult()
+      return this.#currentResult
+    })
+  }
+
+  #executeFetch(
+    fetchOptions?: Omit<ObserverFetchOptions, 'initialPromise'>,
+  ): Promise<TQueryData | undefined> {
+    // Make sure we reference the latest query as the current one might have been removed
+    this.#updateQuery()
+
+    // Fetch
+    let promise: Promise<TQueryData | undefined> = this.#currentQuery.fetch(
+      this.options as QueryOptions<TQueryFnData, TError, TQueryData, TQueryKey>,
+      fetchOptions,
+    )
+
+    if (!fetchOptions?.throwOnError) {
+      promise = promise.catch(noop)
+    }
+
+    return promise
+  }
+```
+
+fetch내에서 promise를 생성하여 비로소 throw 되는 것 같다.
+
+최종적으로 정리하면 아래와 같은 로직을 타게 되는 것 같다.
+
+- useBaseQuery의 shouldSuspend 조건이 true
+- fetchOptimistic 호출하고 결과 throw
+- observer.fetchOptimistic 실행
+- observer.#executeFetch 실행
+- #currentQuery.fetch()로 실제 데이터 요청 Promise 생성
+- 이 Promise가 React Suspense에 잡힘
+
+> 참고 (https://github.com/TanStack/query/blob/main/packages/query-core/src/queryObserver.ts)
+    
+    
 
 
