@@ -430,8 +430,8 @@ Suspense는 비동기 데이터 로딩 중 발생하는 '대기 (Pending) 상태
   };
   ```
 
-  그런데 코드를 따라가면서 제가 궁금증을 가졌던 코드를 만날 수는 없었습니다.
-  처음에 제시했던 두 코드는 `HooksDispatcherOnUpdateInDEV`와 `HooksDispatcherOnMountInDEV`의 메소드 들이었습니다.
+  그런데 코드를 따라가면서 제가 궁금증을 가졌던 코드인 같은 이름의 useState을 만날 수는 없었습니다.
+  처음에 제시했던 [두 코드](#4-궁금해서-더-알아본-부분--updatestate-와-mountstate)는 `HooksDispatcherOnUpdateInDEV`와 `HooksDispatcherOnMountInDEV`의 메소드 들이었습니다.
 
   `~InDEV`라는 postfix가 붙은 함수들의 왜 필요한지 마지막으로 알아보았습니다.
 
