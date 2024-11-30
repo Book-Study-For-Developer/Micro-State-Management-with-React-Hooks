@@ -227,7 +227,7 @@ const [Count1Provider, useCount1] = createStateContext(useNumberState);
 
 또한 타입스크립트와의 호환성도 굿굿 👍
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/253d1ac1-0c8d-4179-8d90-21ade38e0aea/245a1231-b45d-4187-9ac3-689db89931c4/image.png)
+![image](https://github.com/user-attachments/assets/e4445ae2-ca8c-4dcf-ae85-42166bd9d9fe)
 
 ### reduceRight을 이용한 공급자 중첩 방지
 
