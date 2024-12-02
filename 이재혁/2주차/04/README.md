@@ -127,20 +127,30 @@ store.subscribe(...(원하는 콜백))
 ```tsx
 // 2.  리액트 스럽게 사용
 const useStore = (store) => {
-  const [state, useState] = useState(store.getState());
+  const [state, setState] = useState(store.getState());
 
   useEffect(() => {
-    setState(store.getState());
-
-    //????
-    return store.subscribe(() => {
+    const unsubscribe = store.subscribe(() => {
       setState(store.getState());
     });
+
+    setState(store.getState()); //!!!
+
+    return unsubscribe;
   }, [store]);
+
+  return [state, store.setState];
 };
 ```
 
 - ⚠️ 클린업 함수에서 `setState()` 를 한번 호출하는 이유가 `useEffect`가 뒤늦게 실행되어서 `store`가 이미 새로운 상태를 가지고 있을 가능성이 있기 때문이다 라고하는데 왜 그런지 텍스트 상으로 하는 이해가 잘 안되는 군요.
+- 🤣 잘못봤네요 ㅎㅎ.. 클린업 함수에서의 setState가 아니었군요. 하지만 해당 `setState(store.getState())` 제거해도 정상동작하는 것처럼 보이네요 음..
+- 어떤 엣지케이스를 다루는 건지..
+- 클린업 - 이전 렌더링된 값으로 한번 실행 -> 이후 첫번째 인자로 받은 함수를 실행, 컴포넌트가 DOM에서 제거된 이후에도 실행
+- 순서..
+
+  - 맨처음 렌더링 이후 useEffect를 호출 그리고 클린업이 한번 실행 -> subscribe을 한번 호출하먄서 Set에 callback을 add하고 store에 변화를 감지 -> 한번 더 useEffect가 돈다.
+  - 어렵네요
 
 - 이후에는 일반적으로 사용하는 `useState` 처럼 `useStore`를 사용하면 된다
 
