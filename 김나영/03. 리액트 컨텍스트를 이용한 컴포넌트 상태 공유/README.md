@@ -11,7 +11,7 @@
 
 - App.tsx
 
-```tsx
+```jsx
 const [count, setCount] = useState(0);
 ...
 return (
@@ -23,7 +23,7 @@ return (
 
 - Component1.tsx
 
-```tsx
+```jsx
 const { count, setCount } = useContext(CountStateContext);
 return <div>{count}</div>;
 ```
@@ -35,7 +35,7 @@ return <div>{count}</div>;
 
 1. 작은 상태 조각 만들기
 
-```tsx
+```jsx
 const Count1Context = createContext({ ... })
 const Count2Context = createContext({ ... })
 
@@ -60,7 +60,7 @@ const Parent = () => (
 
 다음으로, Count1Context를 위한 Count1Provider을 따로 정의함 (value, setValue를 전달)
 
-```tsx
+```jsx
 const Count1Provider = ({ children }) => {
   const [count1, setCount1] = useState(0);
   return (
@@ -71,7 +71,7 @@ const Count1Provider = ({ children }) => {
 };
 ```
 
-```tsx
+```jsx
 const App = () => (
     <Count1Provider>
         <Count2Provider>
@@ -90,11 +90,13 @@ const App = () => (
 
 **전역 상태 관리와 유사한 역할을 하는 싱글톤 패턴**
 
+- 오늘 회사에서 컨벤션(?)이자 반강제로 급하게 웹소켓을 사용하게 되었는데, 전역상태 관리와 비슷한 점이 있는 것 같아 가져와보았다. 다만 상태관리만을 이용하는 것과는 장단점이 있기 때문에 ... 조금 더 고민이 필요할 것 같다.
+
 - 싱글톤 패턴을 사용하여 인스턴스를 하나만 생성하고, 전역적으로 상태를 관리함
 - 여러 컴포넌트에서 하나의 소켓 인스턴스를 사용할 수 있게 됨
 - getInstance() 메서드를 통해 애플리케이션 전역에서 동일한 인스턴스를 가져올 수 있음.
 
-```tsx
+```jsx
 class WebSocketService {
     private static instance: WebSocketService;
     private readonly BASE_URL = 'ws://localhost:8080/ws';
@@ -127,7 +129,7 @@ class WebSocketService {
 - 다만 단점이 있었다. 전역 상태 관리 라이브러리처럼 상태 변경에 따른 자동 UI 업데이트 기능은 제공하지 않음.
 - 이 부분을 해결하기 위해 custom hook을 만들어서 페이지단에서 가져와서 사용함
 
-```tsx
+```jsx
 export const useWebSocket = () => {
   const [connected, setConnected] = useState<boolean>(false);
   const [messages, setMessages] = useState<string[]>([]);
@@ -157,7 +159,7 @@ export const useWebSocket = () => {
 
 - 사용시
 
-```tsx
+```jsx
 const WebSocketComponent = () => {
   const { connected, messages } = useWebSocket();
 
