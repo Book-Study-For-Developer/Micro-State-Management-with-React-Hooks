@@ -1,6 +1,6 @@
 # 01. 리액트 훅을 이용한 마이크로 상태 관리
 
-> About: 리액트 훅으로 주목받은 마이크로 상태 관리의 개념, useState와 useReducer 훅의 기술적 측면
+> 리액트 훅으로 주목받은 마이크로 상태 관리의 개념, useState와 useReducer 훅의 기술적 측면
 
 <br/>
 
@@ -179,7 +179,7 @@ const reducer = (count, delta) => {
 
 ### 왜 'action' 인가?
 
-action은 stae를 어떻게 변경할지 설명하는 정보를 담고 있다. reducer 함수는 `(state, action) => newState` 형태로, 현재 state와 action을 받아 새로운 상태를 반환한다. literally, state를 newState로 반환하는 action이고 상태 변경을 지시하는 역할.
+action은 state를 어떻게 변경할지 설명하는 정보를 담고 있다. reducer 함수는 `(state, action) => newState` 형태로, 현재 state와 action을 받아 새로운 상태를 반환한다. literally, state를 newState로 반환하는 action이고 상태 변경을 지시하는 역할.
 
 <br/>
 
