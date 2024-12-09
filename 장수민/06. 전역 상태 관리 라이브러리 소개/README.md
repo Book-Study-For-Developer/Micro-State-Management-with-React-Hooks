@@ -85,12 +85,12 @@ useTrackedState를 구현하려면 상태 객체에 대한 속성 접근을 확�
 ```tsx
 const Component = () => {
   const isSmall = useSelector((state) => state.a < 10);
-  return <>{isSmall ? "small" : "big"}</>;
+  return <>{isSmall ? 'small' : 'big'}</>;
 };
 
 const Component = () => {
   const isSmall = useTrackedState().a < 10;
-  return <>{isSmall ? "small" : "big"}</>;
+  return <>{isSmall ? 'small' : 'big'}</>;
 };
 ```
 
@@ -99,3 +99,17 @@ const Component = () => {
 #### 아톰 사용
 
 아톰은 리렌더링을 발생시키는 최소 상태 단위다. 전체 전역 상태를 구독해서 리렌더링을 피하는 대신 아톰을 사용하면 좀 더 세분화해서 구독할 수 있다.
+
+```tsx
+// atom 함수를 통해 가장 작은 상태 단위를 만들고, 이를 useAtom으로 구독할 수 있다.
+const globalState = {
+  a: atom(1),
+  b: atom(2),
+  c: atom(3),
+};
+
+const Component = () => {
+  const value = useAtom(globalState.a);
+  return <>{value}</>;
+};
+```
