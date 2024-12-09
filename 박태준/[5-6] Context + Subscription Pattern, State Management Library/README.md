@@ -166,6 +166,53 @@ const isSmall = useTrackedState().a < 10
 
 아톰(atom)은 리렌더링을 일으키는 최소 상태 단위로 전역상태를 store에서 동시에 관리하는 것이 아니라 아톰이라는 단위로 나누어서 개별적으로 관리하는 것을 말합니다.
 
+### shallowEqual
+
+전역상태 라이브러리에서 결국 중요한 부분은 리렌더링 최적화입니다. shallowEqual 역시 redux에서 useSelector 사용시에 렌더링 최적화를 위해 제공하는 API 입니다.
+
+만약 아래처럼 원시값을 가져온다면 shallowEqual은 필요하지 않습니다.
+
+```tsx
+const name = useSelector((state) => state.auth.name))
+```
+
+useSelector를 통해서 전역상태 중 여러개의 값을 가져올 때 보통 배열이나 객체와 같은 참조형 데이터로 조합하는 형식으로 아래처럼 선택자 함수를 사용하게 됩니다.
+
+useSelector는 Redux store의 특정 상태를 구독하고, 해당 상태가 변경되었을 때 컴포넌트를 다시 렌더링합니다. 기본적으로, useSelector는 엄격한 참조 동등성 비교(===)를 사용하여 상태 변경 여부를 판단합니다.
+
+이 경우 store에 변경이 있을때마다 객체 참조가 바뀌게 되므로 매번 불필요한 리렌더링을 유발하게 됩니다.
+
+```tsx
+const { name, email, gender } = useSelector(({ auth, user }) => ({
+  name: auth.name,
+  email: user.email,
+  gender: user.gender,
+}));
+```
+
+shallowEqual은 얕은 비교를 수행하여 두 객체의 **첫 번째 깊이의 프로퍼티**들만 비교합니다. 이로 인해 내부 값이 동일하다면 렌더링을 방지할 수 있습니다.
+
+```tsx
+const { name, email, gender } = useSelector(
+  ({ auth, user }) => ({
+    name: auth.name,
+    email: user.email,
+    gender: user.gender,
+  }),
+  shallowEqual // shallowEqual option 추가
+);
+```
+
+물론 아래처럼 원시값을 3번 가져와도 렌더링 최적화가 가능합니다.
+
+```tsx
+const name = useSelector(({ auth }) => auth.name);
+const email = useSelector(({ user }) => user.email);
+const gender = useSelector(({ user }) => user.gender);
+```
+
+즉 useSelector로 반환한 값이 참조형 데이터일 경우 shallowEqual을 추가하는걸 고려해볼 수 있습니다.
+
 ### 질문거리
 
 다음 장부터 상태관리 라이브러리 소개가 시작되는데 저희 회사에서는 redux + redux observable + jotai 조합으로 사용중입니다. 다들 상태관리에 어떤 라이브러리를 사용하고 계신가요?
