@@ -63,7 +63,7 @@ useReducer도 useState과 마찬가지로 베일아웃은 이뤄짐.
 const reducer = (state, action) => {
   switch (action.type) {
     //...
-    case "SET_TEXT":
+    case 'SET_TEXT':
       if (!action.text) {
         // bail out
         return state;
@@ -71,7 +71,7 @@ const reducer = (state, action) => {
       // 다른 객체이므로 참조가 달라짐
       return { ...state, text: action.text };
     default:
-      throw new Error("unknown action type");
+      throw new Error('unknown action type');
   }
 };
 ```
@@ -135,7 +135,7 @@ https://github.com/facebook/react/blob/main/packages/react/src/ReactHooks.js#L19
 https://github.com/facebook/react/blob/main/packages/shared/ReactSharedInternals.js#L12-L15
 
 ```tsx
-import * as React from "react";
+import * as React from 'react';
 
 const ReactSharedInternals =
   React.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
@@ -199,7 +199,7 @@ export type Dispatcher = {
   useReducer<S, I, A>(
     reducer: (S, A) => S,
     initialArg: I,
-    init?: (I) => S
+    init?: (I) => S,
   ): [S, Dispatch<A>];
   //...
 };
