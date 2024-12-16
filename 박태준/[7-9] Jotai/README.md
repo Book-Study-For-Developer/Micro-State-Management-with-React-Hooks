@@ -126,7 +126,7 @@ const Parent = () => {
 
 ### action atom
 
-상태를 변경하기 위해 함수를 만드는 것처럼 atom()의 두번째 인수인 write 함수만 사용하여 액션함수를 만들수 있다. 실제로 활용하고 있다.
+상태를 변경하기 위해 함수를 만드는 것처럼 atom()의 두번째 인수인 write 함수만 사용하여 액션함수를 만들수 있다. 실제로 회사에서도 활용하고 있다.
 
 ```tsx
 const countAtom = count(0);
@@ -168,7 +168,7 @@ export const modeAtom = atomWithStorage<"none" | "chat">(
 
 ### 라이브러리 살펴보기 (리렌더링, 구독 구현)
 
-jotai에서는 `useAtom`을 사용하면 자동으로 리렌더링 추적을 한다고 한다. 어떻게 자동으로 추적하는지 궁금해서 조금 찾아보았다.
+jotai에서는 `useAtom`을 사용하면 자동으로 해당 atom을 구독하고 이후 값이 바뀌면 리렌더링이 일어난다.어떻게 자동으로 추적하는지 궁금해서 찾아보았다.
 
 https://github.com/pmndrs/jotai/blob/main/src/react/useAtom.ts 에서는 useAtom이 useAtomValue를 반환하고 있다.
 
