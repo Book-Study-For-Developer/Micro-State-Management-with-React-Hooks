@@ -11,7 +11,7 @@
 
 ```tsx
 // store.ts
-import create from "zustand";
+import create from 'zustand';
 
 export const store = create(() => ({ count: 0 }));
 
@@ -37,15 +37,15 @@ store.setState(state1);
 
 ```tsx
 // store.ts
-import create from "zustand";
+import create from 'zustand';
 
 export const useStore = create(() => ({
   count: 0,
-  text: "hello",
+  text: 'hello',
 }));
 
 // Component.tsx
-import { useStore } from "./store.ts";
+import { useStore } from './store.ts';
 
 const Component = () => {
   const { count, text } = useStore();
@@ -202,7 +202,7 @@ const Component = () => {
   };
 
   useEffect(() => {
-    console.log("component updated");
+    console.log('component updated');
   });
 
   return (
@@ -224,3 +224,100 @@ npm에서 알아본 바로는,
 - Jotai(2.10.3 버전) unpacked size: 438kB
 
 단점은, 선택자를 이용한 수동 렌더링 최적화다. 객체 참조 동등성을 이해해야 하고, 선택자 코드를 위해 보일러플레이트 코드를 많이 작성해야 할 필요가 있다.
+
+---
+
+## 더 알아보기 - 공식문서 참고
+
+### 자동 생성 선택기
+
+```tsx
+import { StoreApi, UseBoundStore } from 'zustand';
+
+type WithSelectors<S> = S extends { getState: () => infer T } ? S & { use: { [K in keyof T]: () => T[K] } } : never;
+
+const createSelectors = <S extends UseBoundStore<StoreApi<object>>>(_store: S) => {
+  let store = _store as WithSelectors<typeof _store>;
+  store.use = {};
+  for (let k of Object.keys(store.getState())) {
+    (store.use as any)[k] = () => store((s) => s[k as keyof typeof s]);
+  }
+
+  return store;
+};
+```
+
+공식 문서에서는 createSelectors를 만들어 선택자 함수를 만들 필요가 없다고 말하고 있다.
+해당 함수에서는 상태 객체의 모든 속성(프로퍼티)을 순회하여 각각에 대한 셀렉터 함수를 만들고 store에 담아서 반환하는 작업을 수행하고 있다.
+
+```tsx
+interface BearState {
+  bears: number;
+  increase: (by: number) => void;
+  increment: () => void;
+}
+
+const useBearStoreBase = create<BearState>()((set) => ({
+  bears: 0,
+  increase: (by) => set((state) => ({ bears: state.bears + by })),
+  increment: () => set((state) => ({ bears: state.bears + 1 })),
+}));
+
+// 기존 store 감싸기
+const useBearStore = createSelectors(useBearStoreBase);
+
+// 선택자가 자동 생성되어 직접 접근해도 됨
+const bears = useBearStore.use.bears();
+const increment = useBearStore.use.increment();
+```
+
+참고 - https://zustand.docs.pmnd.rs/guides/auto-generating-selectors
+
+### 슬라이스 패턴
+
+더 많은 기능을 추가할수록 스토어는 점점 커지고 유지보수도 어려워질 수 있다. 그래서 슬라이스 패턴을 사용하여 더 작은 개별 스토어로 나누고 관리할 수 있다.
+
+```tsx
+// createStore1
+export const createFishSlice = (set) => ({
+  fishes: 0,
+  addFish: () => set((state) => ({ fishes: state.fishes + 1 })),
+});
+
+// createStore2
+export const createBearSlice = (set) => ({
+  bears: 0,
+  addBear: () => set((state) => ({ bears: state.bears + 1 })),
+  eatFish: () => set((state) => ({ fishes: state.fishes - 1 })),
+});
+
+// 스토어 객체 두 개를 결합하여 새로운 스토어 만들기
+import { create } from 'zustand';
+import { createBearSlice } from './bearSlice';
+import { createFishSlice } from './fishSlice';
+
+export const useBoundStore = create((...a) => ({
+  ...createBearSlice(...a),
+  ...createFishSlice(...a),
+}));
+
+// React 컴포넌트에서 사용
+import { useBoundStore } from './stores/useBoundStore';
+
+function App() {
+  const bears = useBoundStore((state) => state.bears);
+  const fishes = useBoundStore((state) => state.fishes);
+  const addBear = useBoundStore((state) => state.addBear);
+  return (
+    <div>
+      <h2>Number of bears: {bears}</h2>
+      <h2>Number of fishes: {fishes}</h2>
+      <button onClick={() => addBear()}>Add a bear</button>
+    </div>
+  );
+}
+
+export default App;
+```
+
+참고 - https://zustand.docs.pmnd.rs/guides/slices-pattern
