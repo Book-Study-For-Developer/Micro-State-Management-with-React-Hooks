@@ -366,6 +366,10 @@ const App = () => (
 export default App;
 ```
 
+<img width="1118" alt="스크린샷 2024-12-17 오전 12 19 58" src="https://github.com/user-attachments/assets/a471febc-4d72-40b8-8681-578e57182738" />
+
+
+
 #### Atoms-in-Atom을 활용했을 때의 차이점
 
 - 배열 아톰은 아톰이 요소인 배열을 보관하는데 사용된다.
