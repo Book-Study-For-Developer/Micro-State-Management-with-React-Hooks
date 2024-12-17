@@ -366,6 +366,8 @@ https://github.com/pmndrs/valtio/blob/main/src/vanilla.ts#L310
 
 → 왜 Object.freeze를 사용하지 않고, readonly 타입을 통해 불변성을 주입했을까요?
 
+불변 갱신 모델을 사용하는 zustan는 내부적으로 immer를 포함하여 불변성 주입에 사용하고 있는 것을 확인했습니다. ( package.json 내에 devDependencies내에 존재 )
+
 <br />
 
 → 🤷🏻 실무에서 불변성을 부여하는 방식을 직접 구헌해서 사용하는 경우가 많은지 궁금합니다..!
