@@ -26,18 +26,18 @@ zustand가 독일어로 “상태”라는 뜻이다
 - Doesn't wrap your app in context providers
 - [Can inform components transiently (without causing render)](https://github.com/pmndrs/zustand?tab=readme-ov-file#transient-updates-for-often-occurring-state-changes)
 
-    ```tsx
-    const useScratchStore = create((set) => ({ scratches: 0, ... }))
-    
-    const Component = () => {
-      // Fetch initial state
-      const scratchRef = useRef(useScratchStore.getState().scratches)
-      // Connect to the store on mount, disconnect on unmount, catch state-changes in a reference
-      useEffect(() => useScratchStore.subscribe(
-        state => (scratchRef.current = state.scratches)
-      ), [])
-      ...
-    ```
+  ```tsx
+  const useScratchStore = create((set) => ({ scratches: 0, ... }))
+
+  const Component = () => {
+    // Fetch initial state
+    const scratchRef = useRef(useScratchStore.getState().scratches)
+    // Connect to the store on mount, disconnect on unmount, catch state-changes in a reference
+    useEffect(() => useScratchStore.subscribe(
+      state => (scratchRef.current = state.scratches)
+    ), [])
+    ...
+  ```
 
 ### Why zustand over context?
 
@@ -72,7 +72,7 @@ store.setState(state1);
 - [리액트의 경우 바닐라의 구독을 기반으로 `useSyncExternalStore` 훅을 사용](https://github.com/pmndrs/zustand/blob/main/src/react.ts)
 
 ```jsx
-const store = create(() => ({ count: 0 , text: ''}));
+const store = create(() => ({ count: 0, text: "" }));
 ```
 
 ### 상태를 병합하고 업데이트 하는 방식
@@ -108,7 +108,7 @@ const setState: StoreApi<TState>['setState'] = (partial, replace) => {
 
 - store 내부의 action에서 업데이트 하는 방식
   - 중첩 객체에서는 스프레드 연산자를 써야 한다.
-  - 중첩이 심해진다면  [라이브러리](https://github.com/pmndrs/zustand/blob/main/docs/guides/updating-state.md#deeply-nested-object)의 도움을 받는다.
+  - 중첩이 심해진다면 [라이브러리](https://github.com/pmndrs/zustand/blob/main/docs/guides/updating-state.md#deeply-nested-object)의 도움을 받는다.
   - state는 불변이기 때문에 상태 업데이트를 위해 `set` 메소드를 사용한다.
 
 ```jsx
@@ -142,14 +142,14 @@ const useBearStore = create((set) => ({
   treats: {},
   increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
   removeAllBears: () => set({ bears: 0 }),
-}))
+}));
 
 // 최적화 전
-const { nuts, honey } = useBearStore()
+const { nuts, honey } = useBearStore();
 
 // 최적화 후
-const nuts = useBearStore((state) => state.nuts)
-const honey = useBearStore((state) => state.honey)
+const nuts = useBearStore((state) => state.nuts);
+const honey = useBearStore((state) => state.honey);
 ```
 
 - `useShallow`를 써서도 가능
@@ -157,27 +157,28 @@ const honey = useBearStore((state) => state.honey)
 ```jsx
 // object에서 nust or honey 변경 시 -> 리렌더링
 const { nuts, honey } = useBearStore(
-  useShallow((state) => ({ nuts: state.nuts, honey: state.honey })),
-)
+  useShallow((state) => ({ nuts: state.nuts, honey: state.honey }))
+);
 
 // array에서 nust or honey 변경 시 -> 리렌더링
 const [nuts, honey] = useBearStore(
-  useShallow((state) => [state.nuts, state.honey]),
-)
+  useShallow((state) => [state.nuts, state.honey])
+);
 
 // Mapped형태에서 treats의 순서, 개수, 키값 변경시 -> 리렌더링
-const treats = useBearStore(useShallow((state) => Object.keys(state.treats)))
+const treats = useBearStore(useShallow((state) => Object.keys(state.treats)));
 ```
 
 - 들어가기 전에 store 생성 방식의 차이가 있다.
 
 ```tsx
-import { create } from 'zustand'
+import { create } from "zustand";
 
 interface BearState {
-  bears: number
-  increase: (by: number) => void}
-  
+  bears: number;
+  increase: (by: number) => void;
+}
+
 // 책에서
 const useBearStore = create<BearState>((set) => ({}));
 
@@ -202,47 +203,47 @@ const useBearStore = create<BearState>()((set) => ({
 export const createFishSlice = (set) => ({
   fishes: 0,
   addFish: () => set((state) => ({ fishes: state.fishes + 1 })),
-})
+});
 
 export const createBearSlice = (set) => ({
   bears: 0,
   addBear: () => set((state) => ({ bears: state.bears + 1 })),
   eatFish: () => set((state) => ({ fishes: state.fishes - 1 })),
-})
+});
 ```
 
 - 메인 스토어
 
 ```tsx
-import { create } from 'zustand'
-import { createBearSlice } from './bearSlice'
-import { createFishSlice } from './fishSlice'
+import { create } from "zustand";
+import { createBearSlice } from "./bearSlice";
+import { createFishSlice } from "./fishSlice";
 
 export const useBoundStore = create((...a) => ({
   ...createBearSlice(...a),
   ...createFishSlice(...a),
-}))
+}));
 ```
 
 - 리액트에서 사용하기
 
 ```tsx
-import { useBoundStore } from './stores/useBoundStore'
+import { useBoundStore } from "./stores/useBoundStore";
 
 function App() {
-  const bears = useBoundStore((state) => state.bears)
-  const fishes = useBoundStore((state) => state.fishes)
-  const addBear = useBoundStore((state) => state.addBear)
+  const bears = useBoundStore((state) => state.bears);
+  const fishes = useBoundStore((state) => state.fishes);
+  const addBear = useBoundStore((state) => state.addBear);
   return (
     <div>
       <h2>Number of bears: {bears}</h2>
       <h2>Number of fishes: {fishes}</h2>
       <button onClick={() => addBear()}>Add a bear</button>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
 ```
 
 - 다른 서브 스토어의 값 가져오기
@@ -250,8 +251,8 @@ export default App
 ```tsx
 export const createBearFishSlice = (set, get) => ({
   addBearAndFish: () => {
-    get().addBear()
-    get().addFish()
+    get().addBear();
+    get().addFish();
   },
-})
+});
 ```

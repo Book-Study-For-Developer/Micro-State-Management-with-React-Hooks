@@ -7,7 +7,7 @@
 - 컴포넌트 상태 사용, 불변 상태 모델
 - 컨텍스트 + 구독 패턴 사용
 - 아톰 자체는 값을 가지지 않기에 모듈 상태와 달리 한번 정의한 아톰 재사용 가능
-- 배율 구조로 리렌더링을 최적화하는  `Atoms-in-Atom`이라는 패턴이 있다.
+- 배율 구조로 리렌더링을 최적화하는 `Atoms-in-Atom`이라는 패턴이 있다.
 - [뭔가 상당히 많음](https://jotai.org/docs)
 
 ## 사용하기
@@ -20,12 +20,12 @@
 
 ```tsx
 const Counter2 = () => {
-// =============================================
+  // =============================================
   // --> use Context API
   const [count, setCount] = useContext(CountContext);
   // --> use Jotai
   const [count, setCount] = useAtom(countAtom);
-// =============================================
+  // =============================================
   const inc = () => setCount((c) => c + 1);
   return (
     <>
@@ -47,11 +47,7 @@ const CountProvider = ({ children }: { children: ReactNode }) => (
   <CountContext.Provider value={useState(0)}>{children}</CountContext.Provider>
 );
 // Context 감싸기
-const App = () => (
-  <CountProvider>
-	  {/* // ... 생략 */}
-  </CountProvider>
-);
+const App = () => <CountProvider>{/* // ... 생략 */}</CountProvider>;
 // 컴포넌트에서 사용하기
 const [count, setCount] = useContext(CountContext);
 ```
@@ -65,7 +61,7 @@ const countAtom = atom(0);
 const [count, setCount] = useAtom(countAtom);
 ```
 
-- Jotai에서 정의 하는 atom 이란? 주저리 주저리…  GPT야 번역해줘!
+- Jotai에서 정의 하는 atom 이란? 주저리 주저리… GPT야 번역해줘!
   - The `atom` function is to create an atom config
     - 아톰 는 아톰 구성을 생성하는 것입니다.
   - We call it "atom config" as it's just a definition and it doesn't yet hold a value.
@@ -114,9 +110,9 @@ function atom<Value, Args extends unknown[], Result>(
 
 ```tsx
 // primitive atom
-function atom<Value>(initialValue: Value): PrimitiveAtom<Value>
+function atom<Value>(initialValue: Value): PrimitiveAtom<Value>;
 // use ==========================================
-const countAtom = atom(0)
+const countAtom = atom(0);
 ```
 
 - `initialValue`: 값이 변경될 때까지 아톰이 반환할 초기 값.
@@ -152,14 +148,14 @@ not writable atom
 - 종속성이 추적되므로, 한 아톰에 대해 `get`이 한 번 이상 사용되면 아톰 값이 변경될 때마다 읽기가 다시 평가됩니다
 
 ```tsx
-// writable derived atom 
+// writable derived atom
 function atom<Value, Args extends unknown[], Result>(
   read: (get: Getter) => Value,
-  write: (get: Getter, set: Setter, ...args: Args) => Result,
-): WritableAtom<Value, Args, Result>
+  write: (get: Getter, set: Setter, ...args: Args) => Result
+): WritableAtom<Value, Args, Result>;
 
 // use ==========================================
-const priceAtom = atom(1000)
+const priceAtom = atom(1000);
 const readWriteAtom = atom<number, number[], void>(
   (get) => get(priceAtom) * 2,
   (get, set, newPrice, new2Price) => {
@@ -173,13 +169,12 @@ const readWriteAtom = atom<number, number[], void>(
   }}
 >
   click
-</button>
+</button>;
 
 // 1. initial -> 1000
 // 2. click!
 // 3. log -> 10000 / updated -> 5000
 // 3-1. 10000 -> 10000 * 2 -> 20000 / 4 -> 5000
-
 ```
 
 - `write` : 아톰의 값을 변경할 때 주로 사용되는 함수
@@ -195,8 +190,8 @@ const readWriteAtom = atom<number, number[], void>(
 // write-only derived atom
 function atom<Value, Args extends unknown[], Result>(
   read: Value,
-  write: (get: Getter, set: Setter, ...args: Args) => Result,
-): WritableAtom<Value, Args, Result>
+  write: (get: Getter, set: Setter, ...args: Args) => Result
+): WritableAtom<Value, Args, Result>;
 
 // use ==========================================
 const priceAtom = atom(1000);
