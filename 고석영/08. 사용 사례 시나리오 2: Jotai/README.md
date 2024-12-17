@@ -39,8 +39,8 @@ const Counter2 = () => {
   )
 }
 
-const App = () => {
-  ;<>
+const App = () => (
+  <>
     <div>
       <Counter1 />
     </div>
@@ -48,7 +48,7 @@ const App = () => {
       <Counter2 />
     </div>
   </>
-}
+)
 ```
 
 - `useState` 사용하듯이 사용
@@ -200,8 +200,8 @@ const Counter = ({ countAtom }) => {
   )
 }
 
-const App = () => {
-  ;<>
+const App = () => (
+  <>
     <Provider>
       <h1>First Provider</h1>
       <div>
@@ -221,7 +221,7 @@ const App = () => {
       </div>
     </Provider>
   </>
-}
+)
 ```
 
 - `Provider`에 `value` prop를 따로 제공하지 않아도 자동으로 아는 이유?
