@@ -4,18 +4,16 @@ https://zustand-demo.pmnd.rs/
 
 현재는 `v5`으로 배포된 상태
 
-<aside>
-<img src="/icons/report_blue.svg" alt="/icons/report_blue.svg" width="40px" />
+> [!NOTE]
+> 
+> **`v5`에서 달라진 점? (https://github.com/pmndrs/zustand/releases)**
+> 
+> - No new features
+> - Drop many old things
+> - Migration from v4 should be smooth.
+> 
+> 특별히 새로운 feature는 없고 오래된 것들을 제거하고, v4에서 마이그레이션을 쉽게 할 수 있도록 함
 
-**`v5`에서 달라진 점? (https://github.com/pmndrs/zustand/releases)**
-
-- No new features
-- Drop many old things
-- Migration from v4 should be smooth.
-
-특별히 새로운 feature는 없고 오래된 것들을 제거하고, v4에서 마이그레이션을 쉽게 할 수 있도록 함
-
-</aside>
 
 ## 사용법 ?
 
@@ -68,42 +66,41 @@ function App() {
 }
 ```
 
-<aside>
-<img src="/icons/report_blue.svg" alt="/icons/report_blue.svg" width="40px" />
-
-set 은 내부적으로 Object.assign() 으로 구현되어 있다.
-
-https://github.com/pmndrs/zustand/blob/main/src/vanilla.ts#L64-L79
-
-```tsx
-const setState: StoreApi<TState>["setState"] = (partial, replace) => {
-  // TODO: Remove type assertion once https://github.com/microsoft/TypeScript/issues/37663 is resolved
-  // https://github.com/microsoft/TypeScript/issues/37663#issuecomment-759728342
-
-  // 바꿀 상태가 함수인지 아닌지에 따른 분기처리
-  const nextState =
-    typeof partial === "function"
-      ? (partial as (state: TState) => TState)(state)
-      : partial;
-
-  // 만약 값이 바뀌었다면?
-  if (!Object.is(nextState, state)) {
-    // 이전 상태를 기억해둔다.
-    const previousState = state;
-
-    // 현재 상태를 새롭게 바꿀 값으로 지정
-    state =
-      replace ?? (typeof nextState !== "object" || nextState === null)
-        ? (nextState as TState)
-        : Object.assign({}, state, nextState);
-
-    // 구독 중인 것들을 모두 실행
-    listeners.forEach((listener) => listener(state, previousState));
-  }
-};
-```
-
-</aside>
+> [!NOTE]
+> 
+> set 은 내부적으로 Object.assign() 으로 구현되어 있다.
+> 
+> https://github.com/pmndrs/zustand/blob/main/src/vanilla.ts#L64-L79
+> 
+> ```tsx
+> const setState: StoreApi<TState>["setState"] = (partial, replace) => {
+>   // TODO: Remove type assertion once https://github.com/microsoft/TypeScript/issues/37663 is resolved
+>   // https://github.com/microsoft/TypeScript/issues/37663#issuecomment-759728342
+> 
+>   // 바꿀 상태가 함수인지 아닌지에 따른 분기처리
+>   const nextState =
+>     typeof partial === "function"
+>       ? (partial as (state: TState) => TState)(state)
+>       : partial;
+> 
+>   // 만약 값이 바뀌었다면?
+>   if (!Object.is(nextState, state)) {
+>     // 이전 상태를 기억해둔다.
+>     const previousState = state;
+> 
+>     // 현재 상태를 새롭게 바꿀 값으로 지정
+>     state =
+>       replace ?? (typeof nextState !== "object" || nextState === null)
+>         ? (nextState as TState)
+>         : Object.assign({}, state, nextState);
+> 
+>     // 구독 중인 것들을 모두 실행
+>     listeners.forEach((listener) => listener(state, previousState));
+>   }
+> };
+> ```
+> 
+>
 
 ### Zustand 사용할 때 최적화하기
 
@@ -145,7 +142,8 @@ const Counter2 = () => {
 
 책에서는 count1이 N만큼 증가하고, count2와 N만큼 감소할 때 리렌더링이 발생하는 Edge 케이스가 있다고 했다. ⇒ 사실 무슨 말인지 이해가 안가서 이대로 GPT에게 물어보았다.
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/253d1ac1-0c8d-4179-8d90-21ade38e0aea/93562fe4-284d-4f15-9a25-a92dc4ba3803/image.png)
+![image](https://github.com/user-attachments/assets/0f8c01b7-c4c9-4ff6-a4a6-de5930724fb2)
+
 
 😰
 
