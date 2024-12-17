@@ -382,7 +382,19 @@ export default App;
 
 ## 🧐 WeakMap
 
-key/value의 모음. key는 객체 또는 unsigned symbol이며 값은 임의의 JS 타입.
+WeakMap 객체는 키가 약하게 참조되는 키/값 쌍의 컬렉션으로, 키는 반드시 객체여야만 한다. 원시 값은 키가 될 수 없다. 만약 키를 원시 값으로 추가하면 Uncaught TypeError: Invalid value used as weak map key라는 에러가 발생한다.
+그리고 WeakMap은 가지고 있는 요소 전체를 반복 구문으로 탐색할 방법이 없다. 이것은 제약 사항처럼 보일 수 있지만 거기에는 그럴만한 이유가 있다. 실제, WeakMap의 독특한 특징은 키로 사용된 객체에 대한 유일한 참조가 WeakMap 내에만 남아 있을 경우, 이 객체를 가비지 컬렉트(garbage collect)할 수 있다.
+
+```js
+const weakMap = new WeakMap();
+const objKey = { name: 'keyObject' };
+
+weakMap.set(objKey, 'value');
+console.log(weakMap.get(objKey)); // "value"
+
+// 원시 값은 사용할 수 없음
+weakMap.set('key', 'value'); // TypeError
+```
 
 https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/WeakMap
 
