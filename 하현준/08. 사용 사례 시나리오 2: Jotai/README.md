@@ -82,7 +82,7 @@ const personAtom = atom((get) => ({
 
 `personAtom`은 `ageAtom`이 변할 때 리렌더링이 일어날까요? ⇒ 네
 
-- 불필요한 리렌더링이 일어나게 되므로 age는 불리해야 한다.
+- 불필요한 리렌더링이 일어나게 되므로 age는 분리해야 한다.
 
 ```tsx
 const fullNameAtom = atom((get) => ({
@@ -165,16 +165,16 @@ https://github.com/wikibook/msmrh/blob/main/chapter08/04_todo_app_single_atom/sr
 
 2.  반복 렌더링 key를 id값으로 사용해야 하는데 사용하지 않는 것이 좋다
     (❓ : 왜 id를 사용하지 않는 것이 좋다고 하는 거지..? ⇒ 뒤를 읽어보니 결국 atom의 특성상 유니크하게 만들 방법이 있으니 불필요하게 id까지 관리하지 말자는 의미인 것 같다.)
-        ```tsx
-        {todos.map((todo) => (
-           <MemoedTodoItem
-              key={todo.id}
-              todo={todo}
-              removeTodo={removeTodo}
-              toggleTodo={toggleTodo}
-           />
-         ))}
-        ```
+    `tsx
+    {todos.map((todo) => (
+       <MemoedTodoItem
+          key={todo.id}
+          todo={todo}
+          removeTodo={removeTodo}
+          toggleTodo={toggleTodo}
+       />
+     ))}
+    `
 
 **패턴 사용해서 해결하기**
 
