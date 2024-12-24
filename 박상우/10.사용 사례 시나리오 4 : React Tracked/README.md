@@ -190,7 +190,7 @@ React Tracked는 컨텍스트를 사용하지 않을 경우에 대해서 createT
 const useTrackedState = createTrackedSelector(useSelector);
 ```
 
-useSelector → 선택자 함수를 받아 함수의 결과를 반환하는 훅이며, 새롭게 정의한 useTrackedState는 상태를 추적하기 위해 proxy로 감싼 결과를 반환하는 훅이 된다.
+`useSelector` → 선택자 함수를 받아 함수의 결과를 반환하는 훅이며, 새롭게 정의한 useTrackedState는 상태를 추적하기 위해 proxy로 감싼 결과를 반환하는 훅이 된다.  
 
 React Redux는 useSelector 훅을 제공하는데 이를 React Tracked와 함께 사용할 수 있다.
 
