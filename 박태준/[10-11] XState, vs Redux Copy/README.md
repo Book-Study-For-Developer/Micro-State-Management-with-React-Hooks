@@ -164,7 +164,7 @@ const videoCallMachine = createMachine({
 
 VSCode에서 바로 상태머신이 어떻게 동작하는지를 볼 수 있습니다.
 
-![alt text](xstate.gif)
+![alt text](xstate-vscode.gif)
 
 [참고]
 
